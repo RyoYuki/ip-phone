@@ -21,6 +21,8 @@
 
 #define BUF_SIZE (1024)
 
+#define NOISE_THRESHOLD (10)
+
 int main(int argc, char** argv){
     int listen_fd, recv_fd, send_fd, audio_fd, audio_socket_fd, max_fd;
     int isCalling = 0;
@@ -141,7 +143,14 @@ int main(int argc, char** argv){
         if(FD_ISSET(audio_fd, &fds)){
             if(isCalling){
                 n = read(audio_fd, buf, BUF_SIZE);
-                sendto(audio_socket_fd, buf, n, 0, (struct sockaddr*)&audio_addr, len_udp);
+                int max_v = 0;
+                for( i = 0; i < n; i++){
+                    if(buf[i]<NOISE_THRESHOLD) buf[i] = 0;
+                    if(buf[i] > max_v) max_v = buf[i];
+                }
+                if(max_v != 0){
+                    sendto(audio_socket_fd, buf, n, 0, (struct sockaddr*)&audio_addr, len_udp);
+                }
             }
         }
     }
