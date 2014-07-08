@@ -55,7 +55,9 @@ int main(int argc, char** argv){
         FD_ZERO(&readfds);
         FD_SET(0, &readfds);
         FD_SET(listen_fd, &readfds);
-        FD_SET(recv_fd, &readfds);
+        if(isCalling){
+            FD_SET(recv_fd, &readfds);
+        }
         FD_SET(audio_fd, &readfds);
 
         max_fd = listen_fd > recv_fd ? listen_fd : recv_fd;
@@ -100,16 +102,13 @@ int main(int argc, char** argv){
                         fprintf(stderr, "Failed to connect back to %s:%d\n", other_recv_addr.sin_addr.s_addr, PORT);
                     }
                 }
+                isCalling = 1;
             }
         }
 
-        if(FD_ISSET(recv_fd, &fds)){
-            if(isCalling){
-                n = read(recv_fd, buf, BUF_SIZE);
-                write(audio_fd, buf, n);
-            }else{
-                isCalling = 1;
-            }
+        if(isCalling & FD_ISSET(recv_fd, &fds)){
+            n = read(recv_fd, buf, BUF_SIZE);
+            write(audio_fd, buf, n);
         }
 
         if(FD_ISSET(audio_fd, &fds)){
