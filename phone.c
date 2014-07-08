@@ -13,6 +13,8 @@
 #include <string.h>
 
 #include <sys/ioctl.h>
+#include <sys/mount.h>
+#include <linux/fs.h>
 
 #define PORT (50000)
 
