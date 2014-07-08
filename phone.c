@@ -7,11 +7,12 @@
 
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include <time.h>
 #include <string.h>
 
-#include <ioctl.h>
+#include <sys/ioctl.h>
 
 #define PORT (50000)
 
@@ -35,7 +36,7 @@ int main(int argc, char** argv){
         fprintf(stderr, "Failed to bind\n");
         exit(1);
     }
-    listen(my_addr, 10);
+    listen(listen_fd, 10);
 
     other_recv_addr.sin_family = AF_INET;
     other_recv_addr.sin_port = htons(PORT);
@@ -44,7 +45,7 @@ int main(int argc, char** argv){
     other_send_addr.sin_port = htons(PORT);
 
 
-    if((audio_fd = open("/dev/dsp", O_RDWR | O_CREATE | O_TRUNC, 0644)) == -1){
+    if((audio_fd = open("/dev/dsp", O_RDWR | O_CREAT | O_TRUNC, 0644)) == -1){
         fprintf(stderr, "Failed to open /dev/dsp\n");
         exit(1);
     }
@@ -94,9 +95,9 @@ int main(int argc, char** argv){
             }else{
                 recv_fd = accept(listen_fd, (struct sockaddr *)&other_send_addr, &len);
                 if(!isMyCalling){
-                    other_recv_addr.sin_addr = strcpy(other_send_addr.sin_addr);
+                    memcpy(&other_recv_addr.sin_addr, &other_send_addr.sin_addr, sizeof(struct in_addr));
                     if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
-                        fprintf(stderr, "Failed to connect back to %s:%d\n", other_recv_addr.sin_addr, PORT);
+                        fprintf(stderr, "Failed to connect back to %s:%d\n", other_recv_addr.sin_addr.s_addr, PORT);
                     }
                 }
             }
@@ -119,7 +120,9 @@ int main(int argc, char** argv){
         }
     }
 QUIT:
-    close(recv_s);
+    close(recv_fd);
+    close(send_fd);
+    close(audio_fd);
 
     fprintf(stdout, "Good Bye\n");
     return 0;
