@@ -106,7 +106,7 @@ int main(int argc, char** argv){
             }
         }
 
-        if(isCalling & FD_ISSET(recv_fd, &fds)){
+        if(isCalling && FD_ISSET(recv_fd, &fds)){
             n = read(recv_fd, buf, BUF_SIZE);
             write(audio_fd, buf, n);
         }
