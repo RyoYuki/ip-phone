@@ -56,6 +56,8 @@ int main(int argc, char** argv){
     audio_addr.sin_family = AF_INET;
     audio_addr.sin_port = htons(UDP_PORT);
 
+    bind(audio_socket_fd, (struct sockaddr*)&audio_addr, sizeof(audio_addr));
+
     if((audio_fd = open("/dev/dsp", O_RDWR, 0644)) == -1){
         fprintf(stderr, "Failed to open /dev/dsp\n");
         exit(1);
