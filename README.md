@@ -1,4 +1,4 @@
 ip-phone
 ========
 
-hogehoge
+this is a great phone
