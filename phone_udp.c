@@ -144,7 +144,7 @@ int main(int argc, char** argv){
             if(isCalling){
                 n = read(audio_fd, buf, BUF_SIZE);
                 for( i = 0; i < n; i++){
-                    if(buf[i]<NOISE_THRESHOLD) buf[i] = 0;
+                    if(fabs(buf[i]-127) < NOISE_THRESHOLD) buf[i] = 127;
                 }
                 sendto(audio_socket_fd, buf, n, 0, (struct sockaddr*)&audio_addr, len_udp);
             }
