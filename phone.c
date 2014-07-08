@@ -53,6 +53,8 @@ int main(int argc, char** argv){
     socklen_t len = sizeof(struct sockaddr_in);
 
     while(1){
+        ioctl(filedes, BLKFLSBUF, 0);
+
         FD_ZERO(&readfds);
         FD_SET(0, &readfds);
         FD_SET(listen_fd, &readfds);
