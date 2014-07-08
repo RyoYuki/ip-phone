@@ -26,6 +26,7 @@ int main(int argc, char** argv){
     char buf[BUF_SIZE];
     int i, j, n;
 
+    send_fd = socket(PF_INET, SOCK_STREAM, 0);
     listen_fd = socket(PF_INET, SOCK_STREAM, 0);
 
     struct sockaddr_in my_addr, other_recv_addr, other_send_addr;
