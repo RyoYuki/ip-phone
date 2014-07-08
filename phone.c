@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     other_send_addr.sin_port = htons(PORT);
 
 
-    if((audio_fd = open("/dev/dsp", O_RDWR | O_CREAT | O_TRUNC, 0644)) == -1){
+    if((audio_fd = open("/dev/dsp", O_RDWR, 0644)) == -1){
         fprintf(stderr, "Failed to open /dev/dsp\n");
         exit(1);
     }
