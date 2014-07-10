@@ -16,10 +16,13 @@
 #include <sys/mount.h>
 #include <linux/fs.h>
 
+#include "fft.c"
+
 #define PORT (50000)
 #define UDP_PORT (50001)
 
 #define BUF_SIZE (1024)
+#define LPF_THRESHOLD (900)
 
 #define NOISE_THRESHOLD (10)
 
@@ -29,6 +32,7 @@ int main(int argc, char** argv){
     int isMyCalling = 0;
     fd_set fds, readfds;
     char buf[BUF_SIZE];
+    float x[BUF_SIZE], y[BUF_SIZE];
     int i, j, n;
 
     send_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -137,7 +141,20 @@ int main(int argc, char** argv){
 
         if(isCalling && FD_ISSET(audio_socket_fd, &fds)){
             n = recvfrom(audio_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&audio_addr, &len_udp);
-            write(audio_fd, buf, n);
+            for(i=0; i<n; i++){
+                x[i] = (float)buf[i];
+                y[i] = 0;
+            }
+            char _f = 0;
+            if(fft(n, x, y)){_f=1;}
+            for(i=LPF_THRESHOLD; i<n; i++){
+                x[i] = 0;
+                y[i] = 0;
+            }
+            if(ifft(n, x, y)){_f=1;}
+            if(!_f){
+                write(audio_fd, buf, n);
+            }
         }
 
         if(FD_ISSET(audio_fd, &fds)){
