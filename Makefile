@@ -13,7 +13,7 @@ $(PROG): $(OBJS)
 	$(CC) -o $@ $^
 
 %.o: %.c
-	$(CC) -c -Wall -g -lm -MMD -MP $<
+	$(CC) -c -Wall -g -MMD -MP $< -lm
 
 clean:
 	rm -f $(PROG) $(OBJS) $(DEPS)
