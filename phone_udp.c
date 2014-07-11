@@ -14,9 +14,9 @@
 
 #include <sys/ioctl.h>
 #include <sys/mount.h>
-#include <linux/fs.h>
+/* #include <linux/fs.h> */
 
-#include "fft.c"
+/* #include "fft.c" */
 
 #define PORT (50000)
 #define UDP_PORT (50001)
@@ -27,7 +27,7 @@
 #define NOISE_THRESHOLD (10)
 
 int main(int argc, char** argv){
-    int listen_fd, recv_fd, send_fd, audio_fd, audio_socket_fd, max_fd;
+    int listen_fd, recv_fd=0, send_fd, audio_fd, audio_socket_fd, max_fd;
     int isCalling = 0;
     int isMyCalling = 0;
     fd_set fds, readfds;
@@ -69,7 +69,7 @@ int main(int argc, char** argv){
         exit(1);
     }
    while(1){
-        ioctl(audio_fd, BLKFLSBUF, 0);
+        /* ioctl(audio_fd, BLKFLSBUF, 0); */
 
         FD_ZERO(&readfds);
         FD_SET(0, &readfds);
@@ -82,6 +82,7 @@ int main(int argc, char** argv){
 
         max_fd = listen_fd > recv_fd ? listen_fd : recv_fd;
         max_fd = max_fd > audio_fd ? max_fd : audio_fd;
+        max_fd = max_fd > audio_socket_fd ? max_fd : audio_socket_fd;
 
         memcpy(&fds, &readfds, sizeof(fd_set));
         select(max_fd+1, &fds, NULL, NULL, NULL);
