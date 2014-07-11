@@ -209,6 +209,7 @@ int main(int argc, char** argv){
                 frame_you = cvQueryFrame (capture_you);
                 //画像の表示
                 cvShowImage ("You", frame_you);
+                int c = cvWaitKey(2);
 
                 currentFrameYou = rand();
                 int32_t imageSize = frame_you->imageSize;
