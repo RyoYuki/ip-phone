@@ -204,6 +204,7 @@ int main(int argc, char** argv){
 
         if(isCalling){
             if(cap_i%CAP_SKIP_NUM==0){
+                fprintf(stdout, "scan\n");
                 //フレーム画像の取込
                 frame_you = cvQueryFrame (capture_you);
                 //画像の表示
@@ -249,6 +250,7 @@ QUIT:
     close(video_socket_fd);
 
     cvReleaseCapture (&capture_you);
+    cvReleaseImage(&frame_you);
     cvReleaseImage(&frame_friend);
     cvDestroyWindow ("You");
     cvDestroyWindow ("Friend");
