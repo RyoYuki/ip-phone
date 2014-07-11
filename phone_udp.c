@@ -16,11 +16,9 @@
 #include <sys/mount.h>
 #include <linux/fs.h>
 
-#include <cv.h>
-#include <highgui.h>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include <stdint.h>
-
-#include "fft.c"
 
 #define PORT (50000)
 #define UDP_PORT (50001)
@@ -46,7 +44,7 @@ int main(int argc, char** argv){
     listen_fd = socket(PF_INET, SOCK_STREAM, 0);
 
     audio_socket_fd = socket(PF_INET, SOCK_DGRAM, 0);
-    vidoe_socket_fd = socket(PF_INET, SOCK_DGRAM, 0);
+    video_socket_fd = socket(PF_INET, SOCK_DGRAM, 0);
 
     socklen_t len = sizeof(struct sockaddr_in);
     socklen_t len_udp;
@@ -83,7 +81,7 @@ int main(int argc, char** argv){
     }
 
     IplImage *frame_you = 0;
-    IplImage *frame_friend = 0; //TODO: create iplimage
+    IplImage *frame_friend = cvCreateImage(cvSize(640, 480), IPL_DEPTH_32F, 3); //TODO: create iplimage
 
     int32_t currentFrameYou = 0;
     int32_t currentFrameFriend = 0;
@@ -212,10 +210,11 @@ int main(int argc, char** argv){
                 int32_t imageSize = frame_you->imageSize;
                 char* imageData = frame_you->imageData;
                 n = imageSize/blocksize;
+                int32_t* int32buf = (int32_t*)buf;
                 for(i=0; i<n; i++){
-                    (int32_t)buf[0] = currentFrameYou;
-                    (int32_t)buf[4] = imageSize;
-                    (int32_t)buf[8] = (int32_t)i;
+                    int32buf[0] = currentFrameYou;
+                    int32buf[1] = imageSize;
+                    int32buf[2] = (int32_t)i;
                     for(j=0; j<blocksize; j++){
                         buf[12+j] = imageData[i*blocksize+j];
                     }
@@ -226,12 +225,13 @@ int main(int argc, char** argv){
         }
         if(isCalling && FD_ISSET(video_socket_fd, &fds)){
             while(n=recvfrom(video_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&video_addr, len_v_udp)){
-                if((int32_t)buf[0] != currentFrameYou){
+                int32_t* int32buf = (int32_t*)buf;
+                if(int32buf[0] != currentFrameYou){
                     //changed frame
                     cvShowImage("Friend", frame_friend);
                 }
-                frame_friend->imageSize = (int32_t)buf[4];
-                i = (int32_t)buf[8];
+                frame_friend->imageSize = int32buf[1];
+                i = int32buf[2];
                 for(j=0; j<blocksize; j++){
                     frame_friend->imageData[i*blocksize+j] = buf[12+j];
                 }
@@ -242,8 +242,11 @@ QUIT:
     close(recv_fd);
     close(send_fd);
     close(audio_fd);
+    close(audio_socket_fd);
+    close(video_socket_fd);
 
     cvReleaseCapture (&capture_you);
+    cvReleaseImage(&frame_friend);
     cvDestroyWindow ("You");
     cvDestroyWindow ("Friend");
 
