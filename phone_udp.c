@@ -234,6 +234,7 @@ int main(int argc, char** argv){
                 if(int32buf[0] != currentFrameYou){
                     //changed frame
                     cvShowImage("Friend", frame_friend);
+                    int c = cvWaitKey(2);
                 }
                 frame_friend->imageSize = int32buf[1];
                 i = int32buf[2];
