@@ -94,6 +94,9 @@ int main(int argc, char** argv){
     cvSetCaptureProperty (capture_you, CV_CAP_PROP_FRAME_WIDTH,  640);
     cvSetCaptureProperty (capture_you, CV_CAP_PROP_FRAME_HEIGHT, 480);
 
+    cvNamedWindow("You", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("Friend", CV_WINDOW_AUTOSIZE);
+
     int cap_i = 0;
 
     while(1){
