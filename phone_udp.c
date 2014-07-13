@@ -222,6 +222,7 @@ QUIT:
     close(send_fd);
     close(audio_fd);
     close(audio_socket_fd);
+    close(listen_fd);
 
     fprintf(stdout, "Good Bye\n");
     return 0;
