@@ -1,4 +1,4 @@
-set yrange [-127:127]
+set yrange [0:127]
 plot 'freq.dat' with lines
 pause 0.05
 reread

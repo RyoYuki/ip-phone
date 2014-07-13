@@ -203,7 +203,7 @@ int main(int argc, char** argv){
             if(count%5==0){
                 freq_dat_fp = fopen("freq.dat", "w");
                 for(i=0; i<n; i++){
-                    fprintf(freq_dat_fp, "%d %6.6f\n", i, x[i]);
+                    fprintf(freq_dat_fp, "%d %6.6f\n", i, sqrt(x[i]*x[i] + y[i]*y[i]));
                 }
                 fclose(freq_dat_fp);
             }
