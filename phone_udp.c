@@ -197,7 +197,7 @@ int main(int argc, char** argv){
             }
             if(ifft(n, x, y)){_f=1;}
             for(i=0; i<n; i+=100){
-                fprintf(stdout, "%d: %6.1f %6.1f\n", i, xd[i], x[i]);
+                fprintf(stdout, "%d: %d %6.1f %6.1f\n", i, (int)buf[i], xd[i], x[i]);
             }
             if(!_f){
                 write(audio_fd, x, n);
