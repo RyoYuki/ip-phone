@@ -1,5 +1,5 @@
 PROG := g1g2g3phone
-SRCS := phone_udp.c fft.c
+SRCS := phone_udp.c fft-orig.c
 OBJS := $(SRCS:%.c=%.o)
 DEPS := $(SRCS:%.c=%.d)
 LIBS := -lm
