@@ -81,7 +81,7 @@ int main(int argc, char** argv){
     }
 
     IplImage *frame_you = 0;
-    IplImage *frame_friend = cvCreateImage(cvSize(640, 480), IPL_DEPTH_32F, 3); //TODO: create iplimage
+    IplImage *frame_friend = cvCreateImage(cvSize(640, 480), IPL_DEPTH_8U, 3); //TODO: create iplimage
 
     int32_t currentFrameYou = 0;
     int32_t currentFrameFriend = 0;
@@ -234,10 +234,8 @@ int main(int argc, char** argv){
             cap_i++;
         }
         if(isCalling && FD_ISSET(video_socket_fd, &fds)){
-            fprintf(stdout, "video_socket_fd\n");
             while(n=recvfrom(video_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&video_addr, len_v_udp)){
                 int32_t* int32buf = (int32_t*)buf;
-                fprintf(stdout, "currentFrameFriend: %d\n", int32buf[0]);
                 if(int32buf[0] != currentFrameFriend){
                     //changed frame
                     cvShowImage("Friend", frame_friend);
