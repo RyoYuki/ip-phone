@@ -212,6 +212,11 @@ int main(int argc, char** argv){
                     y[i] = 0;
                 }
             }
+            for(i=0; i<n; i++){
+                if(x[i]*x[i] + y[i]*y[i] < 10){
+                    x[i] = y[i] = 0;
+                }
+            }
             if(count%5==0){
                 freq_dat_fp = fopen("freq.dat", "w");
                 for(i=0; i<n; i++){
