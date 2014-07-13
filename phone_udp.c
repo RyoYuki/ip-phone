@@ -14,9 +14,7 @@
 
 #include <sys/ioctl.h>
 #include <sys/mount.h>
-/* #include <linux/fs.h> */
-
-/* #include "fft.c" */
+#include <linux/fs.h>
 
 #define PORT (50000)
 #define UDP_PORT (50001)
@@ -25,6 +23,7 @@
 #define LPF_THRESHOLD (900)
 
 #define NOISE_THRESHOLD (10)
+#define VC_WIDTH (200)
 
 int main(int argc, char** argv){
     int listen_fd, recv_fd=0, send_fd, audio_fd, audio_socket_fd, max_fd;
@@ -68,8 +67,12 @@ int main(int argc, char** argv){
         fprintf(stderr, "Failed to open /dev/dsp\n");
         exit(1);
     }
+
+    char isLPFon = 0;
+    char isVoiceChangerOn = 0;
+
    while(1){
-        /* ioctl(audio_fd, BLKFLSBUF, 0); */
+        ioctl(audio_fd, BLKFLSBUF, 0);
 
         FD_ZERO(&readfds);
         FD_SET(0, &readfds);
@@ -99,19 +102,33 @@ int main(int argc, char** argv){
                         goto QUIT;
                         break;
                     default:
-                        if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
-                            fprintf(stderr, "Inavlid IP address\n");
+                        if(strcmp(buf, "lpf on") == 0){
+                            isLPFon = 1;
+                            fprintf(stdout, "LPF on\n");
+                        }else if(strcmp(buf, "lpf off") == 0){
+                            isLPFon = 0;
+                            fprintf(stdout, "LPF off\n");
+                        }else if(strcmp(buf, "voice changer on") == 0){
+                            isVoiceChangerOn = 1;
+                            fprintf(stdout, "Voice Changer on\n");
+                        }else if(strcmp(buf, "voice changer off") == 0){
+                            isVoiceChangerOn = 0;
+                            fprintf(stdout, "Voice Changer off\n");
                         }else{
-                            if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
-                                fprintf(stderr, "Failed to connect to %s:%d\n", buf, PORT);
-                                break;
+                            if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
+                                fprintf(stderr, "Inavlid IP address\n");
+                            }else{
+                                if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
+                                    fprintf(stderr, "Failed to connect to %s:%d\n", buf, PORT);
+                                    break;
+                                }
+                                if(inet_aton(buf, &audio_addr.sin_addr) == 0){
+                                    fprintf(stderr, "Invalid IP address\n");
+                                    break;
+                                }
+                                fprintf(stdout, "Calling to %s\n", buf);
+                                isMyCalling = 1;
                             }
-                            if(inet_aton(buf, &audio_addr.sin_addr) == 0){
-                                fprintf(stderr, "Invalid IP address\n");
-                                break;
-                            }
-                            fprintf(stdout, "Calling to %s\n", buf);
-                            isMyCalling = 1;
                         }
                 }
             }
@@ -148,9 +165,17 @@ int main(int argc, char** argv){
             }
             char _f = 0;
             if(fft(n, x, y)){_f=1;}
-            for(i=LPF_THRESHOLD; i<n; i++){
-                x[i] = 0;
-                y[i] = 0;
+            if(isLPFon){
+                for(i=LPF_THRESHOLD; i<n; i++){
+                    x[i] = 0;
+                    y[i] = 0;
+                }
+            }
+            if(isVoiceChangerOn){
+                for(i=n-VC_WIDTH-1; i>=0; i--){
+                    x[i+VC_WIDTH] = x[i];
+                    y[i+VC_WIDTH] = y[i];
+                }
             }
             if(ifft(n, x, y)){_f=1;}
             if(!_f){
