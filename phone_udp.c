@@ -74,6 +74,8 @@ int main(int argc, char** argv){
     FILE *freq_dat_fp;
     int count=0;
 
+    fprintf(stdout, "enter IP address >> ");
+
    while(1){
         ioctl(audio_fd, BLKFLSBUF, 0);
 
@@ -138,6 +140,12 @@ int main(int argc, char** argv){
                         }else if(strcmp(buf, "set voicechange off") == 0){
                             isVoiceChangerOn = 0;
                             fprintf(stdout, "Voice Changer off\n");
+                        }else if(strcmp(buf, "hang up")==0){
+                            if(isCalling){
+                                close(recv_fd);
+                                close(send_fd);
+                                send_fd = socket(PF_INET, SOCK_STREAM, 0);
+                            }
                         }else{
                             if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
                                 fprintf(stderr, "Inavlid IP address\n");
@@ -150,7 +158,7 @@ int main(int argc, char** argv){
                                     fprintf(stderr, "Invalid IP address\n");
                                     break;
                                 }
-                                fprintf(stdout, "Calling to %s\n", buf);
+                                fprintf(stdout, "Connected to %s\n", buf);
                                 isMyCalling = 1;
                             }
                         }
@@ -171,8 +179,23 @@ int main(int argc, char** argv){
                     if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
                         fprintf(stderr, "Failed to connect back to %s:%d\n", other_recv_addr.sin_addr.s_addr, PORT);
                     }
+                    char ans = 0;
+                    do{
+                        fprintf(stdout, "Take a call from %s? (y/n) >> ", inet_ntoa(other_recv_addr));
+                        scanf("%c", &ans);
+                    }while(ans != 'y' && ans != 'n');
+                    if(ans == 'y'){
+                        fprintf(stdout, "Now you are talking with %s\n", inet_ntoa(other_recv_addr));
+                        isCalling = 1;
+                    }else{
+                        close(recv_fd);
+                        close(send_fd);
+                        fprintf(stdout, "Rejected\n");
+                        isCalling = 0;
+                    }
+                }else{
+                    isCalling = 1;
                 }
-                isCalling = 1;
             }
         }
 
