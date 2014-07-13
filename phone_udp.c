@@ -67,7 +67,7 @@ int main(int argc, char** argv){
 
     char isLPFon = 1;
     char isVoiceChangerOn = 0;
-    int LPF_THRESHOLD = 200;
+    int LPF_THRESHOLD = 400;
     int VC_WIDTH = 200;
     int NOISE_THRESHOLD = 15;
 
@@ -274,13 +274,13 @@ int main(int argc, char** argv){
                     x[i] = y[i] = 0;
                 }
             }
-            if(count%5==0){
-                freq_dat_fp = fopen("freq.dat", "w");
-                for(i=0; i<n; i++){
-                    fprintf(freq_dat_fp, "%d %6.6f\n", i, sqrt(x[i]*x[i] + y[i]*y[i]));
-                }
-                fclose(freq_dat_fp);
-            }
+            /* if(count%5==0){ */
+                /* freq_dat_fp = fopen("freq.dat", "w"); */
+                /* for(i=0; i<n; i++){ */
+                    /* fprintf(freq_dat_fp, "%d %6.6f\n", i, sqrt(x[i]*x[i] + y[i]*y[i])); */
+                /* } */
+                /* fclose(freq_dat_fp); */
+            /* } */
             count++;
             if(ifft(n, x, y)){_f=1;}
             for(i=0; i<n; i+=100){
