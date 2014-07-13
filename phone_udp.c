@@ -69,7 +69,7 @@ int main(int argc, char** argv){
 
     char isLPFon = 0;
     char isVoiceChangerOn = 0;
-    int LPF_THRESHOLD = 1000;
+    int LPF_THRESHOLD = 200;
     int VC_WIDTH = 200;
 
     FILE *freq_dat_fp;
@@ -189,15 +189,27 @@ int main(int argc, char** argv){
                 xd[i] = x[i];
             }
             if(isLPFon){
-                for(i=LPF_THRESHOLD; i<n; i++){
+                for(i=0; i<LPF_THRESHOLD; i++){
+                    x[i] = 0;
+                    y[i] = 0;
+                }
+                for(i=n-1; i>n-LPF_THRESHOLD; i++){
                     x[i] = 0;
                     y[i] = 0;
                 }
             }
             if(isVoiceChangerOn){
-                for(i=n-VC_WIDTH-1; i>=0; i--){
-                    x[i+VC_WIDTH] = x[i];
-                    y[i+VC_WIDTH] = y[i];
+                for(i=n-1; i>=n/2; i--){
+                    x[i] = x[i-VC_WIDTH];
+                    y[i] = y[i-VC_WIDTH];
+                }
+                for(i=0; i<n/2; i++){
+                    x[i] = x[i+VC_WIDTH];
+                    y[i] = y[i+VC_WIDTH];
+                }
+                for(i=n/2-VC_WIDTH; i<n/2+VC_WIDTH; i++){
+                    x[i] = 0;
+                    y[i] = 0;
                 }
             }
             if(count%5==0){
