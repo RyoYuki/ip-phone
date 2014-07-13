@@ -209,7 +209,7 @@ int main(int argc, char** argv){
         }
 
         if(isCalling){
-            if(cap_i%CAP_SKIP_NUM==0){
+            /* if(cap_i%CAP_SKIP_NUM==0){ */
                 //フレーム画像の取込
                 frame_you = cvQueryFrame (capture_you);
                 //画像の表示
@@ -230,7 +230,7 @@ int main(int argc, char** argv){
                     }
                     sendto(video_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&video_addr, len_v_udp);
                 }
-            }
+            /* } */
             cap_i++;
         }
         if(isCalling && FD_ISSET(video_socket_fd, &fds)){
