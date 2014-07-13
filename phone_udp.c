@@ -102,16 +102,16 @@ int main(int argc, char** argv){
                         goto QUIT;
                         break;
                     default:
-                        if(strcmp(buf, "lpf on") == 0){
+                        if(strcmp(buf, "lpf on\n") == 0){
                             isLPFon = 1;
                             fprintf(stdout, "LPF on\n");
-                        }else if(strcmp(buf, "lpf off") == 0){
+                        }else if(strcmp(buf, "lpf off\n") == 0){
                             isLPFon = 0;
                             fprintf(stdout, "LPF off\n");
-                        }else if(strcmp(buf, "voice changer on") == 0){
+                        }else if(strcmp(buf, "voice changer on\n") == 0){
                             isVoiceChangerOn = 1;
                             fprintf(stdout, "Voice Changer on\n");
-                        }else if(strcmp(buf, "voice changer off") == 0){
+                        }else if(strcmp(buf, "voice changer off\n") == 0){
                             isVoiceChangerOn = 0;
                             fprintf(stdout, "Voice Changer off\n");
                         }else{
