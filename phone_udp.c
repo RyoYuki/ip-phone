@@ -151,19 +151,25 @@ int main(int argc, char** argv){
                                 isCalling = 0;
                             }
                         }else{
-                            if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
-                                fprintf(stderr, "Inavlid IP address\n");
+                            if(!isCalling){
+                                if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
+                                    fprintf(stderr, "Inavlid IP address\n");
+                                    fprintf(stdout, "Enter IP address >> ");
+                                    fflush(stdout);
+                                }else{
+                                    if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
+                                        fprintf(stderr, "Failed to connect to %s:%d\n", buf, PORT);
+                                        break;
+                                    }
+                                    if(inet_aton(buf, &audio_addr.sin_addr) == 0){
+                                        fprintf(stderr, "Invalid IP address\n");
+                                        break;
+                                    }
+                                    fprintf(stdout, "Connected to %s\n", buf);
+                                    isMyCalling = 1;
+                                }
                             }else{
-                                if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
-                                    fprintf(stderr, "Failed to connect to %s:%d\n", buf, PORT);
-                                    break;
-                                }
-                                if(inet_aton(buf, &audio_addr.sin_addr) == 0){
-                                    fprintf(stderr, "Invalid IP address\n");
-                                    break;
-                                }
-                                fprintf(stdout, "Connected to %s\n", buf);
-                                isMyCalling = 1;
+                                fprintf(stderr, "Invalid command\n");
                             }
                         }
                 }
@@ -192,6 +198,8 @@ int main(int argc, char** argv){
                         fprintf(stdout, "Now you are talking with %x\n", other_recv_addr.sin_addr.s_addr);
                         isCalling = 1;
                     }else{
+                        strcpy(buf, "hang up\n");
+                        write(send_fd, buf, BUF_SIZE);
                         close(recv_fd);
                         close(send_fd);
                         fprintf(stdout, "Rejected\n");
@@ -213,7 +221,12 @@ int main(int argc, char** argv){
             }
             if(strcmp(buf, "hang up") == 0){
                 fprintf(stdout, "hung up\n");
+                close(recv_fd);
+                close(send_fd);
+                send_fd = socket(PF_INET, SOCK_STREAM, 0);
                 isCalling = 0;
+                fprintf(stdout, "Enter IP address >> ");
+                fflush(stdout);
             }
         }
 
