@@ -113,6 +113,11 @@ int fft(int n, float x[], float y[])
   return 0;  /* ³íI—¹ */
 }
 
+int iftt(int n, float x[], float y[]){
+    return fft(-n, x, y);
+}
+
+
 /* #define N 64 */
 
 /* int main(void) */
