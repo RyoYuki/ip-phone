@@ -178,7 +178,7 @@ int main(int argc, char** argv){
             n = recvfrom(audio_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&audio_addr, &len_udp);
             for(i=0; i<n; i++){
                 xd[i] = (float)buf[i];
-                x[i] = (float)buf[i]-127;
+                x[i] = (float)buf[i];
                 y[i] = 0;
             }
             char _f = 0;
@@ -196,11 +196,6 @@ int main(int argc, char** argv){
                 }
             }
             if(ifft(n, x, y)){_f=1;}
-            for(i=0; i<n; i++){
-                x[i] += 127;
-                printf("%d: %d %d\n", i, (int)x[i], (int)xd[i]);
-                y[i] = 0;
-            }
             if(!_f){
                 write(audio_fd, x, n);
             }
