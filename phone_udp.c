@@ -197,7 +197,7 @@ int main(int argc, char** argv){
                     y[i+VC_WIDTH] = y[i];
                 }
             }
-            for(i=0; i<n; i++){
+            for(i=0; i<n; i+=10){
                 fprintf(stdout, "%d: %6.3f %6.3f\n", i, xd[i], x[i]);
             }
             if(ifft(n, x, y)){_f=1;}
