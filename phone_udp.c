@@ -143,6 +143,10 @@ int main(int argc, char** argv){
                                 fprintf(stderr, "Invalid IP address\n");
                                 break;
                             }
+                            if(inet_aton(buf, &video_addr.sin_addr) == 0){
+                                fprintf(stderr, "Invalid IP address\n");
+                                break;
+                            }
                             fprintf(stdout, "Calling to %s\n", buf);
                             isMyCalling = 1;
                         }
