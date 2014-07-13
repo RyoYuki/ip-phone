@@ -11,10 +11,10 @@ all: $(PROG)
 -include $(DEPS)
 
 $(PROG): $(OBJS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LIBS)
 
 %.o: %.c
-	$(CC) -c -Wall -g -MMD -MP $< $(LIBS)
+	$(CC) -c -Wall -g -MMD -MP $<
 
 clean:
 	rm -f $(PROG) $(OBJS) $(DEPS)
