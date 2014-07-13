@@ -196,6 +196,9 @@ int main(int argc, char** argv){
                 }
             }
             if(ifft(n, x, y)){_f=1;}
+            for(i=0; i<n; i++){
+                printf("%d: %d %d\n", i, xd[i], x[i]);
+            }
             if(!_f){
                 write(audio_fd, x, n);
             }
