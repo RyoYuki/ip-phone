@@ -198,7 +198,6 @@ int main(int argc, char** argv){
             if(ifft(n, x, y)){_f=1;}
             for(i=0; i<n; i++){
                 x[i] += 127;
-                xd[i] = x[i];
                 printf("%d: %d %d\n", i, (int)x[i], (int)xd[i]);
                 y[i] = 0;
             }
