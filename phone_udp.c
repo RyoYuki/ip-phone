@@ -19,7 +19,7 @@
 #define PORT (50000)
 #define UDP_PORT (50001)
 
-#define BUF_SIZE (1024)
+#define BUF_SIZE (2048)
 
 #define NOISE_THRESHOLD (10)
 
@@ -69,8 +69,8 @@ int main(int argc, char** argv){
 
     char isLPFon = 0;
     char isVoiceChangerOn = 0;
-    int LPF_THRESHOLD = 900;
-    int VC_WIDTH = 20;
+    int LPF_THRESHOLD = 1000;
+    int VC_WIDTH = 200;
 
    while(1){
         ioctl(audio_fd, BLKFLSBUF, 0);
