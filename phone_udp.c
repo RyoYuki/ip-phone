@@ -143,9 +143,12 @@ int main(int argc, char** argv){
                             fprintf(stdout, "Voice Changer off\n");
                         }else if(strcmp(buf, "hang up")==0){
                             if(isCalling){
+                                strcpy(buf, "hang up\n");
+                                write(send_fd, buf, BUF_SIZE);
                                 close(recv_fd);
                                 close(send_fd);
                                 send_fd = socket(PF_INET, SOCK_STREAM, 0);
+                                isCalling = 0;
                             }
                         }else{
                             if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
@@ -182,7 +185,7 @@ int main(int argc, char** argv){
                     }
                     char ans = 0;
                     do{
-                        fprintf(stdout, "Take a call from %x? (y/n) >> ", other_recv_addr.sin_addr.s_addr);
+                        fprintf(stdout, "\nTake a call from %x? (y/n) >> ", other_recv_addr.sin_addr.s_addr);
                         scanf("%c", &ans);
                     }while(ans != 'y' && ans != 'n');
                     if(ans == 'y'){
@@ -202,7 +205,16 @@ int main(int argc, char** argv){
 
         if(isCalling && FD_ISSET(recv_fd, &fds)){
             n = read(recv_fd, buf, BUF_SIZE);
-            write(audio_fd, buf, n);
+            for(i=0; i<n; i++){
+                if(buf[i]=='\n'){
+                    buf[i]='\0';
+                    break;
+                }
+            }
+            if(strcmp(buf, "hang up") == 0){
+                fprintf(stdout, "hung up\n");
+                isCalling = 0;
+            }
         }
 
         if(isCalling && FD_ISSET(audio_socket_fd, &fds)){
