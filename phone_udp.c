@@ -65,11 +65,11 @@ int main(int argc, char** argv){
         exit(1);
     }
 
-    char isLPFon = 0;
+    char isLPFon = 1;
     char isVoiceChangerOn = 0;
     int LPF_THRESHOLD = 200;
     int VC_WIDTH = 200;
-    int NOISE_THRESHOLD = 10;
+    int NOISE_THRESHOLD = 15;
 
     FILE *freq_dat_fp;
     int count=0;
