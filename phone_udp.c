@@ -21,8 +21,6 @@
 
 #define BUF_SIZE (2048)
 
-#define NOISE_THRESHOLD (10)
-
 int main(int argc, char** argv){
     int listen_fd, recv_fd=0, send_fd, audio_fd, audio_socket_fd, max_fd;
     int isCalling = 0;
@@ -71,6 +69,7 @@ int main(int argc, char** argv){
     char isVoiceChangerOn = 0;
     int LPF_THRESHOLD = 200;
     int VC_WIDTH = 200;
+    int NOISE_THRESHOLD = 10;
 
     FILE *freq_dat_fp;
     int count=0;
@@ -120,6 +119,11 @@ int main(int argc, char** argv){
                         if(strncmp(buf, "set voicechange width ", 22) == 0){
                             VC_WIDTH = atoi(buf+22);
                             fprintf(stdout, "VC SHIFT N: %d\n", VC_WIDTH);
+                            break;
+                        }
+                        if(strncmp(buf, "set noise th ", 13) == 0){
+                            NOISE_THRESHOLD = atoi(buf+13);
+                            fprintf(stdout, "NOISE THRESHOLD: %d\n", NOISE_THRESHOLD);
                             break;
                         }
                         if(strcmp(buf, "set lpf on") == 0){
@@ -213,7 +217,7 @@ int main(int argc, char** argv){
                 }
             }
             for(i=0; i<n; i++){
-                if(x[i]*x[i] + y[i]*y[i] < 10){
+                if(x[i]*x[i] + y[i]*y[i] < NOISE_THRESHOLD){
                     x[i] = y[i] = 0;
                 }
             }
