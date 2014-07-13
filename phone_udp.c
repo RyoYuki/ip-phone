@@ -166,6 +166,7 @@ int main(int argc, char** argv){
                     audio_addr.sin_port = htons(UDP_PORT);
                     video_addr.sin_port = htons(VIDEO_PORT);
                     len_udp = sizeof(audio_addr);
+                    len_v_udp = sizeof(video_addr);
                     if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
                         fprintf(stderr, "Failed to connect back to %s:%d\n", other_recv_addr.sin_addr.s_addr, PORT);
                     }
