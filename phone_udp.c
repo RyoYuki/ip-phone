@@ -102,6 +102,7 @@ int main(int argc, char** argv){
                         goto QUIT;
                         break;
                     default:
+                        fprintf(stdout, "%s", buf);
                         if(strcmp(buf, "lpf on\n") == 0){
                             isLPFon = 1;
                             fprintf(stdout, "LPF on\n");
