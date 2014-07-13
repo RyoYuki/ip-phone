@@ -20,10 +20,8 @@
 #define UDP_PORT (50001)
 
 #define BUF_SIZE (1024)
-#define LPF_THRESHOLD (900)
 
 #define NOISE_THRESHOLD (10)
-#define VC_WIDTH (200)
 
 int main(int argc, char** argv){
     int listen_fd, recv_fd=0, send_fd, audio_fd, audio_socket_fd, max_fd;
@@ -70,6 +68,8 @@ int main(int argc, char** argv){
 
     char isLPFon = 0;
     char isVoiceChangerOn = 0;
+    int LPF_THRESHOLD = 900;
+    int VC_WIDTH = 20;
 
    while(1){
         ioctl(audio_fd, BLKFLSBUF, 0);
@@ -108,7 +108,14 @@ int main(int argc, char** argv){
                         goto QUIT;
                         break;
                     default:
-                        fprintf(stdout, "%s", buf);
+                        if(strncmp(buf, "set lpf th ", 11) == 0){
+                            LPF_THRESHOLD = atoi(buf+11);
+                            fprintf(stdout, "LPF THRESHOLD: %d\n", LPF_THRESHOLD);
+                        }
+                        if(strncmp(buf, "set voicechange width ", 22) == 0){
+                            VC_WIDTH = atoi(buf+22);
+                            fprintf(stdout, "VC SHIFT N: %d\n", VC_WIDTH);
+                        }
                         if(strcmp(buf, "set lpf on") == 0){
                             isLPFon = 1;
                             fprintf(stdout, "LPF on\n");
