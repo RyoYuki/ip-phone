@@ -182,11 +182,11 @@ int main(int argc, char** argv){
                     }
                     char ans = 0;
                     do{
-                        fprintf(stdout, "Take a call from %s? (y/n) >> ", inet_ntop(other_recv_addr));
+                        fprintf(stdout, "Take a call from %s? (y/n) >> ", inet_ntoa(other_recv_addr.sin_addr));
                         scanf("%c", &ans);
                     }while(ans != 'y' && ans != 'n');
                     if(ans == 'y'){
-                        fprintf(stdout, "Now you are talking with %s\n", inet_ntop(other_recv_addr));
+                        fprintf(stdout, "Now you are talking with %s\n", inet_ntoa(other_recv_addr.sin_addr));
                         isCalling = 1;
                     }else{
                         close(recv_fd);
