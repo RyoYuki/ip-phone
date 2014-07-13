@@ -205,7 +205,6 @@ int main(int argc, char** argv){
 
         if(isCalling){
             if(cap_i%CAP_SKIP_NUM==0){
-                fprintf(stdout, "scan\n");
                 //フレーム画像の取込
                 frame_you = cvQueryFrame (capture_you);
                 //画像の表示
@@ -230,6 +229,7 @@ int main(int argc, char** argv){
             cap_i++;
         }
         if(isCalling && FD_ISSET(video_socket_fd, &fds)){
+            fprintf(stdout, "video_socket_fd\n");
             while(n=recvfrom(video_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&video_addr, len_v_udp)){
                 int32_t* int32buf = (int32_t*)buf;
                 fprintf(stdout, "currentFrameFriend: %d\n", int32buf[0]);
