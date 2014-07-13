@@ -115,6 +115,7 @@ int main(int argc, char** argv){
         max_fd = listen_fd > recv_fd ? listen_fd : recv_fd;
         max_fd = max_fd > audio_fd ? max_fd : audio_fd;
         max_fd = max_fd > audio_socket_fd ? max_fd : audio_socket_fd;
+        max_fd = max_fd > video_socket_fd ? max_fd : video_socket_fd;
 
         memcpy(&fds, &readfds, sizeof(fd_set));
         select(max_fd+1, &fds, NULL, NULL, NULL);
