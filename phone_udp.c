@@ -72,6 +72,9 @@ int main(int argc, char** argv){
     int LPF_THRESHOLD = 1000;
     int VC_WIDTH = 200;
 
+    FILE *freq_dat_fp;
+    int count=0;
+
    while(1){
         ioctl(audio_fd, BLKFLSBUF, 0);
 
@@ -197,6 +200,14 @@ int main(int argc, char** argv){
                     y[i+VC_WIDTH] = y[i];
                 }
             }
+            if(count%10==0){
+                freq_dat_fp = fopen("freq.dat", "w");
+                for(i=0; i<n; i++){
+                    fprintf(freq_dat_fp, "%d %6.6f\n", i, x[i]);
+                }
+                fclose(freq_dat_fp);
+            }
+            count++;
             if(ifft(n, x, y)){_f=1;}
             for(i=0; i<n; i+=100){
                 /* fprintf(stdout, "%d: %d %6.1f %6.1f\n", i, (int)buf[i], xd[i], x[i]); */
