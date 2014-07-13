@@ -177,7 +177,7 @@ int main(int argc, char** argv){
         if(isCalling && FD_ISSET(audio_socket_fd, &fds)){
             n = recvfrom(audio_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&audio_addr, &len_udp);
             for(i=0; i<n; i++){
-                x[i] = (float)buf[i];
+                x[i] = (float)buf[i] - 127;
                 y[i] = 0;
             }
             char _f = 0;
@@ -196,9 +196,6 @@ int main(int argc, char** argv){
                     x[i+VC_WIDTH] = x[i];
                     y[i+VC_WIDTH] = y[i];
                 }
-            }
-            for(i=0; i<n; i+=10){
-                fprintf(stdout, "%d: %6.3f %6.3f\n", i, xd[i], x[i]);
             }
             if(ifft(n, x, y)){_f=1;}
             for(i=0; i<n; i+=100){
