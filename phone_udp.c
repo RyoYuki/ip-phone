@@ -94,6 +94,9 @@ int main(int argc, char** argv){
     cvSetCaptureProperty (capture_you, CV_CAP_PROP_FRAME_WIDTH,  640);
     cvSetCaptureProperty (capture_you, CV_CAP_PROP_FRAME_HEIGHT, 480);
 
+    cvNamedWindow("You", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("Friend", CV_WINDOW_AUTOSIZE);
+
     int cap_i = 0;
 
     while(1){
@@ -201,10 +204,12 @@ int main(int argc, char** argv){
 
         if(isCalling){
             if(cap_i%CAP_SKIP_NUM==0){
+                fprintf(stdout, "scan\n");
                 //フレーム画像の取込
                 frame_you = cvQueryFrame (capture_you);
                 //画像の表示
                 cvShowImage ("You", frame_you);
+                int c = cvWaitKey(2);
 
                 currentFrameYou = rand();
                 int32_t imageSize = frame_you->imageSize;
@@ -229,7 +234,7 @@ int main(int argc, char** argv){
                 if(int32buf[0] != currentFrameFriend){
                     //changed frame
                     cvShowImage("Friend", frame_friend);
-                    fprintf(stdout, "currentFrameYou:%d\n", currentFrameFriend);
+                    int c = cvWaitKey(2);
                 }
                 frame_friend->imageSize = int32buf[1];
                 i = int32buf[2];
@@ -247,6 +252,7 @@ QUIT:
     close(video_socket_fd);
 
     cvReleaseCapture (&capture_you);
+    cvReleaseImage(&frame_you);
     cvReleaseImage(&frame_friend);
     cvDestroyWindow ("You");
     cvDestroyWindow ("Friend");
