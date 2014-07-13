@@ -226,9 +226,10 @@ int main(int argc, char** argv){
         if(isCalling && FD_ISSET(video_socket_fd, &fds)){
             while(n=recvfrom(video_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&video_addr, len_v_udp)){
                 int32_t* int32buf = (int32_t*)buf;
-                if(int32buf[0] != currentFrameYou){
+                if(int32buf[0] != currentFrameFriend){
                     //changed frame
                     cvShowImage("Friend", frame_friend);
+                    fprintf(stdout, "currentFrameYou:%d\n", currentFrameFriend);
                 }
                 frame_friend->imageSize = int32buf[1];
                 i = int32buf[2];
