@@ -74,7 +74,7 @@ int main(int argc, char** argv){
     FILE *freq_dat_fp;
     int count=0;
 
-    fprintf(stdout, "Enter IP address >> ");
+    fprintf(stdout, "IP address >> ");
     fflush(stdout);
 
    while(1){
@@ -148,13 +148,15 @@ int main(int argc, char** argv){
                                 close(recv_fd);
                                 close(send_fd);
                                 send_fd = socket(PF_INET, SOCK_STREAM, 0);
-                                isCalling = 0;
+                                isCalling = isMyCalling = 0;
+                                fprintf(stdout, "IP address >> ");
+                                fflush(stdout);
                             }
                         }else{
                             if(!isCalling){
                                 if(inet_aton(buf, &other_recv_addr.sin_addr) == 0){
                                     fprintf(stderr, "Inavlid IP address\n");
-                                    fprintf(stdout, "Enter IP address >> ");
+                                    fprintf(stdout, "IP address >> ");
                                     fflush(stdout);
                                 }else{
                                     if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
@@ -203,6 +205,8 @@ int main(int argc, char** argv){
                         close(recv_fd);
                         close(send_fd);
                         fprintf(stdout, "Rejected\n");
+                        fprintf(stdout, "IP address >> ");
+                        fflush(stdout);
                         isCalling = 0;
                     }
                 }else{
@@ -224,8 +228,8 @@ int main(int argc, char** argv){
                 close(recv_fd);
                 close(send_fd);
                 send_fd = socket(PF_INET, SOCK_STREAM, 0);
-                isCalling = 0;
-                fprintf(stdout, "Enter IP address >> ");
+                isCalling = isMyCalling = 0;
+                fprintf(stdout, "IP address >> ");
                 fflush(stdout);
             }
         }
