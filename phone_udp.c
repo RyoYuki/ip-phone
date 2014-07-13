@@ -75,7 +75,7 @@ int main(int argc, char** argv){
     int count=0;
 
     fprintf(stdout, "Enter IP address >> ");
-    fflush();
+    fflush(stdout);
 
    while(1){
         ioctl(audio_fd, BLKFLSBUF, 0);
@@ -178,7 +178,7 @@ int main(int argc, char** argv){
                     audio_addr.sin_port = htons(UDP_PORT);
                     len_udp = sizeof(audio_addr);
                     if(connect(send_fd, (struct sockaddr*)&other_recv_addr, sizeof(other_recv_addr)) == -1){
-                        fprintf(stderr, "Failed to connect back to %s:%d\n", other_recv_addr.sin_addr.s_addr, PORT);
+                        fprintf(stderr, "Failed to connect back to %x:%d\n", other_recv_addr.sin_addr.s_addr, PORT);
                     }
                     char ans = 0;
                     do{
