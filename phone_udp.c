@@ -111,10 +111,12 @@ int main(int argc, char** argv){
                         if(strncmp(buf, "set lpf th ", 11) == 0){
                             LPF_THRESHOLD = atoi(buf+11);
                             fprintf(stdout, "LPF THRESHOLD: %d\n", LPF_THRESHOLD);
+                            break;
                         }
                         if(strncmp(buf, "set voicechange width ", 22) == 0){
                             VC_WIDTH = atoi(buf+22);
                             fprintf(stdout, "VC SHIFT N: %d\n", VC_WIDTH);
+                            break;
                         }
                         if(strcmp(buf, "set lpf on") == 0){
                             isLPFon = 1;
@@ -174,7 +176,7 @@ int main(int argc, char** argv){
         if(isCalling && FD_ISSET(audio_socket_fd, &fds)){
             n = recvfrom(audio_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&audio_addr, &len_udp);
             for(i=0; i<n; i++){
-                x[i] = (float)buf[i];
+                x[i] = (float)buf[i]-127;
                 y[i] = 0;
             }
             char _f = 0;
@@ -192,8 +194,12 @@ int main(int argc, char** argv){
                 }
             }
             if(ifft(n, x, y)){_f=1;}
+            for(i=0; i<n; i++){
+                x[i] += 127;
+                y[i] = 0;
+            }
             if(!_f){
-                write(audio_fd, buf, n);
+                write(audio_fd, x, n);
             }
         }
 
