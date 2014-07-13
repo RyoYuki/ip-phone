@@ -97,22 +97,28 @@ int main(int argc, char** argv){
                 exit(1);
             }
             if( n > 0 ){
+                for(i=0; i<n; i++){
+                    if(buf[i] == '\n'){
+                        buf[i] = '\0';
+                        break;
+                    }
+                }
                 switch(buf[0]){
                     case 'q':
                         goto QUIT;
                         break;
                     default:
                         fprintf(stdout, "%s", buf);
-                        if(strcmp(buf, "lpf on\n") == 0){
+                        if(strcmp(buf, "set lpf on") == 0){
                             isLPFon = 1;
                             fprintf(stdout, "LPF on\n");
-                        }else if(strcmp(buf, "lpf off\n") == 0){
+                        }else if(strcmp(buf, "set lpf off") == 0){
                             isLPFon = 0;
                             fprintf(stdout, "LPF off\n");
-                        }else if(strcmp(buf, "voice changer on\n") == 0){
+                        }else if(strcmp(buf, "set voicechange on") == 0){
                             isVoiceChangerOn = 1;
                             fprintf(stdout, "Voice Changer on\n");
-                        }else if(strcmp(buf, "voice changer off\n") == 0){
+                        }else if(strcmp(buf, "set voicechange off") == 0){
                             isVoiceChangerOn = 0;
                             fprintf(stdout, "Voice Changer off\n");
                         }else{
