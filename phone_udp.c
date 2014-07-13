@@ -193,7 +193,7 @@ int main(int argc, char** argv){
                     x[i] = 0;
                     y[i] = 0;
                 }
-                for(i=n-1; i>n-LPF_THRESHOLD; i++){
+                for(i=n-1; i>n-LPF_THRESHOLD; i--){
                     x[i] = 0;
                     y[i] = 0;
                 }
