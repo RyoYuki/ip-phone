@@ -231,6 +231,7 @@ int main(int argc, char** argv){
         if(isCalling && FD_ISSET(video_socket_fd, &fds)){
             while(n=recvfrom(video_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&video_addr, len_v_udp)){
                 int32_t* int32buf = (int32_t*)buf;
+                fprintf(stdout, "currentFrameFriend: %d\n", int32buf[0]);
                 if(int32buf[0] != currentFrameFriend){
                     //changed frame
                     cvShowImage("Friend", frame_friend);
