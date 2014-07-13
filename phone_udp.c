@@ -30,6 +30,7 @@ int main(int argc, char** argv){
     fd_set fds, readfds;
     char buf[BUF_SIZE];
     float x[BUF_SIZE], y[BUF_SIZE];
+    float xd[BUF_SIZE], yd[BUF_SIZE];
     int i, j, n;
 
     send_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -176,6 +177,7 @@ int main(int argc, char** argv){
         if(isCalling && FD_ISSET(audio_socket_fd, &fds)){
             n = recvfrom(audio_socket_fd, buf, BUF_SIZE, 0, (struct sockaddr*)&audio_addr, &len_udp);
             for(i=0; i<n; i++){
+                xd[i] = (float)buf[i];
                 x[i] = (float)buf[i]-127;
                 y[i] = 0;
             }
@@ -196,6 +198,8 @@ int main(int argc, char** argv){
             if(ifft(n, x, y)){_f=1;}
             for(i=0; i<n; i++){
                 x[i] += 127;
+                xd[i] = x[i];
+                printf("%d: %d %d\n", i, (int)x[i], (int)xd[i]);
                 y[i] = 0;
             }
             if(!_f){
@@ -217,6 +221,7 @@ QUIT:
     close(recv_fd);
     close(send_fd);
     close(audio_fd);
+    close(audio_socket_fd);
 
     fprintf(stdout, "Good Bye\n");
     return 0;
